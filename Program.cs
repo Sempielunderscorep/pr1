@@ -9,19 +9,12 @@ class Program{
         Thread second = new Thread(MatchFizz);
         Thread third = new Thread(MatchBuzz);
         first.Start();
-        //second.Start();
-        //third.Start();
+        second.Start();
+        third.Start();
 
-        while(first.IsAlive || (collection.Count != 0)){
-            if(!second.IsAlive){
-                second = new Thread(MatchFizz);
-                second.Start();
-            }
-            if(!third.IsAlive){
-                third = new Thread(MatchBuzz);
-                third.Start();
-            }
-        }
+        first.Join();
+        collection.CompleteAdding();
+        
     }
     public static void Fill(){
         string fizzbuzz = "";
@@ -39,17 +32,21 @@ class Program{
         }
     }
     public static void MatchFizz(){
-        string item = collection.Take();
-        if (item.Contains("fi"))
+        foreach (string item in collection.GetConsumingEnumerable())
         {
-            Console.WriteLine("FIZZ: Found fizz!");
+            if (item.Contains("fi"))
+            {
+                Console.WriteLine($"FIZZ: found fizz in \"{item}\"");
+            }
         }
     }
     public static void MatchBuzz(){
-        string item = collection.Take();
-        if (item.Contains("bu"))
+        foreach (string item in collection.GetConsumingEnumerable())
         {
-            Console.WriteLine("BUZZ: Found buzz!");
+            if (item.Contains("bu"))
+            {
+                Console.WriteLine($"BUZZ: found buzz in \"{item}\"");
+            }
         }
     }
 }
